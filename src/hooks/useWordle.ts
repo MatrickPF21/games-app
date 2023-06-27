@@ -1,13 +1,14 @@
 import React from "react";
 import words from "@/data/word.json";
+import { useToast } from "@/components/ui/use-toast";
 
 const TRIES = 6;
 const keys = "abcdefghijklmnñopqrstuvwxyz".split("");
 
 export function useWordle() {
   const [word] = React.useState(
-    // words[Math.floor(Math.random() * words.length)]
-    "fines"
+    words[Math.floor(Math.random() * words.length)]
+    // "fines"
   );
   const [guessedWords, setGuessedWords] = React.useState<string[]>(
     Array(TRIES).fill("")
@@ -15,6 +16,7 @@ export function useWordle() {
   const [currentGuess, setCurrentGuess] = React.useState<number>(0);
   const [win, setWin] = React.useState<boolean>(false);
   const [lose, setLose] = React.useState<boolean>(false);
+  const { toast } = useToast();
 
   React.useEffect(() => {
     const handleListener = (e: KeyboardEvent) => {
@@ -38,20 +40,25 @@ export function useWordle() {
       } else if (e.key === "Enter") {
         if (guessedWords[currentGuess].length !== 5) return;
 
+        setCurrentGuess(prev => prev + 1);
+
         const haveGuessed = !!guessedWords.find(
           w => w.toLowerCase() === word.toLowerCase()
         );
-        const didLose = !guessedWords.some(w => !!w) && !haveGuessed;
+        const didLose =
+          guessedWords.some(w => !!w) &&
+          !haveGuessed &&
+          currentGuess + 1 >= TRIES;
 
         if (didLose) {
           setLose(true);
+          return;
         }
 
         if (haveGuessed) {
           setWin(true);
+          return;
         }
-
-        setCurrentGuess(prev => prev + 1);
       }
     };
 
@@ -62,11 +69,27 @@ export function useWordle() {
     };
   }, [currentGuess, guessedWords, word, win, lose]);
 
+  React.useEffect(() => {
+    if (win) {
+      console.log("win");
+      toast({
+        title: "You win!",
+        description: "",
+      });
+    }
+
+    if (lose) {
+      console.log("lose");
+      toast({
+        title: "You lose!",
+        description: "",
+      });
+    }
+  }, [win, lose]);
+
   return {
     guessedWords,
     currentGuess,
     word,
-    win,
-    lose,
   };
 }

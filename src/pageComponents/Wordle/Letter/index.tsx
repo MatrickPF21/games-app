@@ -1,11 +1,10 @@
 import { twMerge } from "tailwind-merge";
 
-interface LetterProps {
+interface LetterProps extends React.ComponentProps<"div"> {
   pressedLetter: string;
   isCorrectLetter: boolean;
   isCloseLetter: boolean;
   reveal: boolean;
-  className?: string;
 }
 
 export default function Letter({
@@ -14,6 +13,7 @@ export default function Letter({
   isCorrectLetter,
   reveal,
   className,
+  ...props
 }: LetterProps) {
   const correctClass = reveal
     ? isCorrectLetter
@@ -26,9 +26,10 @@ export default function Letter({
   return (
     <div
       className={twMerge(
-        `h-12 w-12 border border-gray-500 text-4xl font-bold uppercase ${correctClass} inline-flex items-center justify-center`,
+        `h-12 w-12 border border-gray-500 text-4xl font-bold uppercase ${correctClass} inline-flex items-center justify-center text-white`,
         className
       )}
+      {...props}
     >
       <span>{pressedLetter}</span>
     </div>

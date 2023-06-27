@@ -49,45 +49,29 @@ export default function Keyboard({
     return obj;
   }, [guessedWords, word, currentGuess]);
 
+  const handleClick = (key: string) => {
+    document.dispatchEvent(new KeyboardEvent("keydown", { key }));
+  };
+
+  const rowKeysRender = (key: string, index: number) => (
+    <Letter
+      key={index}
+      isCloseLetter={letters.close.includes(key)}
+      isCorrectLetter={letters.correct.includes(key)}
+      pressedLetter={key}
+      reveal={true}
+      className='h-12 w-8 rounded-lg text-xl'
+      role='button'
+      onClick={() => handleClick(key)}
+    />
+  );
+
   return (
     <div className=''>
       <ul className='flex flex-col items-center gap-1'>
-        <li className='flex gap-2'>
-          {FIRST_ROW_KEYS.map((key, index) => (
-            <Letter
-              key={index}
-              isCloseLetter={letters.close.includes(key)}
-              isCorrectLetter={letters.correct.includes(key)}
-              pressedLetter={key}
-              reveal={true}
-              className='h-12 w-8 rounded-lg text-xl'
-            />
-          ))}
-        </li>
-        <li className='flex gap-2'>
-          {SECOND_ROW_KEYS.map((key, index) => (
-            <Letter
-              key={index}
-              isCloseLetter={letters.close.includes(key)}
-              isCorrectLetter={letters.correct.includes(key)}
-              pressedLetter={key}
-              reveal={true}
-              className='h-12 w-8 rounded-lg text-xl'
-            />
-          ))}
-        </li>
-        <li className='flex gap-2'>
-          {THIRD_ROW_KEYS.map((key, index) => (
-            <Letter
-              key={index}
-              isCloseLetter={letters.close.includes(key)}
-              isCorrectLetter={letters.correct.includes(key)}
-              pressedLetter={key}
-              reveal={true}
-              className='h-12 w-8 rounded-lg text-xl'
-            />
-          ))}
-        </li>
+        <li className='flex gap-2'>{FIRST_ROW_KEYS.map(rowKeysRender)}</li>
+        <li className='flex gap-2'>{SECOND_ROW_KEYS.map(rowKeysRender)}</li>
+        <li className='flex gap-2'>{THIRD_ROW_KEYS.map(rowKeysRender)}</li>
       </ul>
     </div>
   );
